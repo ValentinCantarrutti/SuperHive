@@ -209,39 +209,61 @@ iniciarMusicaMenu() {
   }
 
   seleccionar() {
-    this.sonidoClickeo.play(); // 🔊 reproducir clic al seleccionar
-    
-    const opcion = this.opciones[this.indiceSeleccionado];
+  this.sonidoClickeo.play();
 
-    if (this.primerInicio && opcion !== 'Manual') return;
-    if (this.primerInicio && opcion === 'Manual') {
-      localStorage.setItem("tutorialVisto", true);
-    }
+  const opcion = this.opciones[this.indiceSeleccionado];
 
-    if (opcion === 'Jugar') {
-// Detener música si está sonando
-  const musica = this.sound.get('musicaMenu');
-  if (musica && musica.isPlaying) {
-    musica.stop();
-    this.sound.remove(musica);
+  if (this.primerInicio && opcion !== 'Manual') return;
+  if (this.primerInicio && opcion === 'Manual') {
+    localStorage.setItem("tutorialVisto", true);
   }
 
-  // Mensaje visual antes de cerrar
-  const centerX = this.cameras.main.centerX;
-  const centerY = this.cameras.main.centerY;
-
-  this.add.rectangle(centerX, centerY, 600, 200, 0x000000, 0.8).setOrigin(0.5);
-  this.add.text(centerX, centerY, 'Gracias por jugar', {
-    fontFamily: 'Public Pixel',
-    fontSize: '32px',
-    color: '#ffd34a'
-  }).setOrigin(0.5);
-
-  // Espera un momento y luego destruye y cierra
-  this.time.delayedCall(1500, () => {
-    this.game.destroy(true);
-    location.href = "about:blank";
-  });
+  if (opcion === 'Jugar') {
+    const musica = this.sound.get('musicaMenu');
+    if (musica && musica.isPlaying) {
+      musica.stop();
+      this.sound.remove(musica);
     }
+    this.scene.start('Escenarondas');
+
+  } else if (opcion === 'Puntuaciones') {
+    this.registry.set('volverDesde', true);
+    this.scene.start('Puntuaciones');
+
+  } else if (opcion === 'Manual') {
+    this.registry.set('volverDesde', true);
+    this.scene.start('Manual');
+
+  } else if (opcion === 'Créditos') {
+    this.registry.set('volverDesde', true);
+    this.scene.start('Creditos');
+
+  } else if (opcion === 'Salir') {
+    const musica = this.sound.get('musicaMenu');
+    if (musica && musica.isPlaying) {
+      musica.stop();
+      this.sound.remove(musica);
+    }
+
+    // Fondo negro pantalla completa
+    this.add.rectangle(
+      this.cameras.main.centerX,
+      this.cameras.main.centerY,
+      this.cameras.main.width,
+      this.cameras.main.height,
+      0x000000
+    ).setOrigin(0.5).setDepth(999);
+
+    // Mensaje "Gracias por jugar"
+    this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Gracias por jugar', {
+      fontFamily: 'Public Pixel',
+      fontSize: '32px',
+      color: '#ffd34a'
+    }).setOrigin(0.5).setDepth(1000);
+
+    // Bloquear interacciones posteriores
+    this.input.keyboard.enabled = false;
+    this.input.enabled = false;
   }
+}
 }
