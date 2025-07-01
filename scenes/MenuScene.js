@@ -219,37 +219,29 @@ iniciarMusicaMenu() {
     }
 
     if (opcion === 'Jugar') {
-if (opcion === 'Jugar') {
-  this.sound.get('musicaMenu')?.stop();
-  this.scene.start('Escenarondas');
-}
-      this.scene.start('Escenarondas');
-    } else if (opcion === 'Puntuaciones') {
-      this.registry.set('volverDesde', true);
-      this.scene.start('Puntuaciones');
-    } else if (opcion === 'Manual') {
-      this.registry.set('volverDesde', true);
-      this.scene.start('Manual');
-    } else if (opcion === 'Créditos') {
-      this.registry.set('volverDesde', true);
-      this.scene.start('Creditos');
-    } else if (opcion === 'Salir') {
-       const canvas = this.sys.game.canvas;
-  if (canvas) {
-    canvas.style.display = 'none';
+// Detener música si está sonando
+  const musica = this.sound.get('musicaMenu');
+  if (musica && musica.isPlaying) {
+    musica.stop();
+    this.sound.remove(musica);
   }
 
-  const parent = canvas?.parentNode;
-  if (parent) {
-    const mensaje = document.createElement('div');
-    mensaje.innerText = 'Gracias por jugar 🐝';
-    mensaje.style.fontFamily = 'Public Pixel';
-    mensaje.style.fontSize = '32px';
-    mensaje.style.color = '#ffd34a';
-    mensaje.style.textAlign = 'center';
-    mensaje.style.marginTop = '200px';
-    parent.appendChild(mensaje);
-  }
+  // Mensaje visual antes de cerrar
+  const centerX = this.cameras.main.centerX;
+  const centerY = this.cameras.main.centerY;
+
+  this.add.rectangle(centerX, centerY, 600, 200, 0x000000, 0.8).setOrigin(0.5);
+  this.add.text(centerX, centerY, 'Gracias por jugar', {
+    fontFamily: 'Public Pixel',
+    fontSize: '32px',
+    color: '#ffd34a'
+  }).setOrigin(0.5);
+
+  // Espera un momento y luego destruye y cierra
+  this.time.delayedCall(1500, () => {
+    this.game.destroy(true);
+    location.href = "about:blank";
+  });
     }
   }
 }
