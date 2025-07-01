@@ -234,7 +234,22 @@ if (opcion === 'Jugar') {
       this.registry.set('volverDesde', true);
       this.scene.start('Creditos');
     } else if (opcion === 'Salir') {
-      window.close();
+       const canvas = this.sys.game.canvas;
+  if (canvas) {
+    canvas.style.display = 'none';
+  }
+
+  const parent = canvas?.parentNode;
+  if (parent) {
+    const mensaje = document.createElement('div');
+    mensaje.innerText = 'Gracias por jugar 🐝';
+    mensaje.style.fontFamily = 'Public Pixel';
+    mensaje.style.fontSize = '32px';
+    mensaje.style.color = '#ffd34a';
+    mensaje.style.textAlign = 'center';
+    mensaje.style.marginTop = '200px';
+    parent.appendChild(mensaje);
+  }
     }
   }
 }
