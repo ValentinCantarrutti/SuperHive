@@ -35,7 +35,7 @@ const config = {
 };
 
 // Cargar fuente Joystix Monospace
-const fontJoystix = new FontFace('Joystix Monospace', 'url(/public/assets/fonts/joystix-monospace.otf)');
+const fontJoystix = new FontFace('Joystix Monospace', 'url(./public/assets/fonts/joystix-monospace.otf)');
 fontJoystix.load().then(() => {
   document.fonts.add(fontJoystix);
   console.log('Fuente Joystix Monospace cargada correctamente.');
@@ -44,7 +44,7 @@ fontJoystix.load().then(() => {
 });
 
 // Cargar fuente Public Pixel
-const fontPublicPixel = new FontFace('Public Pixel', 'url(/public/assets/fonts/PublicPixel.otf)');
+const fontPublicPixel = new FontFace('Public Pixel', 'url(./public/assets/fonts/PublicPixel.otf)');
 fontPublicPixel.load().then(() => {
   document.fonts.add(fontPublicPixel);
   console.log('Fuente Public Pixel cargada correctamente.');
