@@ -73,16 +73,16 @@ export default class HelloWorldScene extends Phaser.Scene {
   this.puntos = 0;
   this.totalMoscasGeneradas = 0;
   this.vidasExtra = 0;
-this.vidasMaximas = 4;
-this.umbralVidaExtra = 2000;
-this.polenAnterior = 0; // para llevar control del incremento
-this.iconosVidas = [];
+  this.vidasMaximas = 4;
+  this.umbralVidaExtra = 2000;
+  this.polenAnterior = 0; // para llevar control del incremento
+  this.iconosVidas = [];
   this.juegoTerminado = false;
   this.abejaInmune = false;
   //
 
-this.puntuaciones = []; // Array vacío para guardar puntuaciones (ej. {puntos: 500, ronda: 3})
-this.maxPuntuaciones = 10; // máximo número de puntuaciones guardadas
+  this.puntuaciones = []; // Array vacío para guardar puntuaciones (ej. {puntos: 500, ronda: 3})
+  this.maxPuntuaciones = 10; // máximo número de puntuaciones guardadas
 
   //Jugador
   //Se implementa el sprite y animacion de la abeja junto a sus fisicas
@@ -132,7 +132,7 @@ this.maxPuntuaciones = 10; // máximo número de puntuaciones guardadas
   //
 
   //Si moscas tocan abeja esta se destruye y se activa la derrota
-this.physics.add.overlap(this.moscas, this.abeja, () => {
+  this.physics.add.overlap(this.moscas, this.abeja, () => {
   if (this.abejaInmune || this.juegoTerminado) return;
 
   if (this.vidasExtra > 0) {
@@ -144,7 +144,7 @@ this.physics.add.overlap(this.moscas, this.abeja, () => {
     this.sonidoAbejaDañada.play();
     this.derrota();
   }
-}, null, this);  //
+  }, null, this);  //
   //
 
   //Balas de abejas
@@ -155,7 +155,7 @@ this.physics.add.overlap(this.moscas, this.abeja, () => {
   //
 
   //Se asigna que si la bala toca la mosca ambas son eliminadas, se suman los puntos y polen.
-this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
+  this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
   bala.destroy();
   mosca.destroy();
   this.sonidoMoscaImpacto.play();
@@ -176,17 +176,17 @@ this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
   }
 
   this.polenAnterior = this.polen;
-} else {
+  } else {
   this.polen = 0;
   this.polenAnterior = 0;
-}
+  }
 
   if (this.polen >= this.umbralVidaExtra && this.vidasExtra < this.vidasMaximas) {
   this.vidasExtra++;
   this.polen = 0;
   this.actualizarIconosVidas();
   this.sonidoVidaGanada.play();
-}
+  }
 
   const umbralesActuales = Math.floor(this.polen / this.umbralVidaExtra);
   const umbralesPrevios = Math.floor(this.polenAnterior / this.umbralVidaExtra);
@@ -208,7 +208,7 @@ this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
     this.totalMoscasGeneradas = 0;
     this.mostrarTextoRonda(this.rondaActual);
   }
-}, null, this);
+  }, null, this);
 
   //Si la bala de abejas y moscas toca el borde se destruye
  this.physics.world.on("worldbounds", (body) => {
@@ -218,76 +218,74 @@ this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
   if (this.proyectiles.contains(bala)) {
     bala.destroy();
   }
-
+ //
   // Bala de mosca
   if (this.proyectilesEnemigos.contains(bala)) {
     bala.destroy();
   }
-});
+  });
   //
 
-//Implementado fondo para textos de puntos y polen.
+  //Implementado fondo para textos de puntos y polen.
   const fondoHUD = this.add.image(1198, 224, 'marcoHUD');
   fondoHUD.setOrigin(0.5);
   fondoHUD.setScale(7.2); // Ajustá según el tamaño de tu imagen
   fondoHUD.setDepth(50); // Por debajo de los textos, que están en 100
-//
+  //
 
-  //Se implementa texto que muestra la etapa fija en la esquina
-// HUD compacto horizontal
-// ETAPA (sin cambios)
-const baseX = 1068;
-let baseY = 105;
+  //Se implementa textos en la esquina
+  const baseX = 1068;
+  let baseY = 105;
 
-this.textoEtapa = this.add.text(baseX, baseY, `ETAPA ${this.rondaActual}`, {
+  this.textoEtapa = this.add.text(baseX, baseY, `ETAPA ${this.rondaActual}`, {
   fontFamily: 'Joystix Monospace',
   fontSize: '30px',
   color: '#ffffff',
   stroke: '#000',
   strokeThickness: 2
-}).setScrollFactor(0).setDepth(100);
+  }).setScrollFactor(0).setDepth(100);
 
-baseY += 52;
+  baseY += 52;
 
-this.add.text(baseX, baseY, 'PUNTUACIÓN:', {
+  this.add.text(baseX, baseY, 'PUNTUACIÓN:', {
   fontFamily: 'Joystix Monospace',
   fontSize: '26px',
   color: '#ffff00',
   stroke: '#000',
   strokeThickness: 2
-}).setOrigin(0, 0.5).setDepth(100);
+  }).setOrigin(0, 0.5).setDepth(100);
 
-baseY += 32;
+  baseY += 32;
 
-this.textoPuntos = this.add.text(baseX, baseY, '', {
+  this.textoPuntos = this.add.text(baseX, baseY, '', {
   fontFamily: 'Joystix Monospace',
   fontSize: '32px',
   color: '#ffff00',
   stroke: '#000',
   strokeThickness: 2
-}).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
+  }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
 
-baseY += 38;
+  baseY += 38;
 
-this.add.text(baseX, baseY, 'POLEN:', {
+  this.add.text(baseX, baseY, 'POLEN:', {
   fontFamily: 'Joystix Monospace',
   fontSize: '26px',
   color: '#ffb6ff',
   stroke: '#000',
   strokeThickness: 2
-}).setOrigin(0, 0.5).setDepth(100);
+  }).setOrigin(0, 0.5).setDepth(100);
 
-baseY += 32;
+  baseY += 32;
 
-this.textoPolen = this.add.text(baseX, baseY, '', {
+  this.textoPolen = this.add.text(baseX, baseY, '', {
   fontFamily: 'Joystix Monospace',
   fontSize: '32px',
   color: '#ffb6ff',
   stroke: '#000000',
   strokeThickness: 2
-}).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
+  }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
 
-baseY += 38;
+  baseY += 38;
 
 this.add.text(baseX, baseY, 'VIDAS:', {
   fontFamily: 'Joystix Monospace',
@@ -295,13 +293,13 @@ this.add.text(baseX, baseY, 'VIDAS:', {
   color: '#66ccff',
   stroke: '#000',
   strokeThickness: 2
-}).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
+  }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
 
 baseY += 32;
 
 this.slotVidasTexto = [];
 this.iconosVidas = [];
-
+//
 for (let i = 0; i < this.vidasMaximas; i++) {
   const x = baseX + i * 34; // alineados al inicio
   const slot = this.add.text(x, baseY, '-', {
@@ -312,13 +310,8 @@ for (let i = 0; i < this.vidasMaximas; i++) {
     strokeThickness: 2
   }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100);
   this.slotVidasTexto.push(slot);
-}
-
-
+  }
   //
-
-
-
   this.mostrarTextoRonda(this.rondaActual);
 
   this.cursors = this.input.keyboard.createCursorKeys(); //Creada teclas de flechas
@@ -335,7 +328,7 @@ for (let i = 0; i < this.vidasMaximas; i++) {
   this.proyectilesEnemigos = this.physics.add.group(); //Creado grupo de balas de moscas
 
   //Añadido que se puedan interceptar las balas de moscas con balas de abejas y sumen puntos
-this.physics.add.overlap(this.proyectiles, this.proyectilesEnemigos, (balaAbeja, balaMosca) => {
+  this.physics.add.overlap(this.proyectiles, this.proyectilesEnemigos, (balaAbeja, balaMosca) => {
   this.sonidoMoscaImpacto.play();
   balaAbeja.destroy();
   balaMosca.destroy();
@@ -355,17 +348,17 @@ this.physics.add.overlap(this.proyectiles, this.proyectilesEnemigos, (balaAbeja,
   }
 
   this.polenAnterior = this.polen;
-} else {
+  } else {
   this.polen = 0;
   this.polenAnterior = 0;
-}
+  }
 
   if (this.polen >= this.umbralVidaExtra && this.vidasExtra < this.vidasMaximas) {
   this.vidasExtra++;
   this.polen = 0;
   this.actualizarIconosVidas();
   this.sonidoVidaGanada.play();
-}
+  }
 
   const umbralesActuales = Math.floor(this.polen / this.umbralVidaExtra);
   const umbralesPrevios = Math.floor(this.polenAnterior / this.umbralVidaExtra);
@@ -375,11 +368,11 @@ this.physics.add.overlap(this.proyectiles, this.proyectilesEnemigos, (balaAbeja,
   }
 
   this.polenAnterior = this.polen;
-}, null, this);
-//
+  }, null, this);
+  //
 
-//Añadido que las balas de moscas puedan destruir las abejas
-this.physics.add.overlap(this.proyectilesEnemigos, this.abeja, () => {
+  //Añadido que las balas de moscas puedan destruir las abejas
+  this.physics.add.overlap(this.proyectilesEnemigos, this.abeja, () => {
   if (this.abejaInmune || this.juegoTerminado) return;
 
   if (this.vidasExtra > 0) {
@@ -394,7 +387,7 @@ this.physics.add.overlap(this.proyectilesEnemigos, this.abeja, () => {
 }, null, this);
 this.actualizarIconosVidas();
 //
-// 🟨 Mostrar texto "ETAPA X" y reproducir música de inicio una sola vez
+//Mostrar texto "ETAPA X" y reproducir música de inicio una sola vez
 this.textoEtapaInicial = this.add.text(564, 505, `ETAPA ${this.rondaActual}`, {
   fontFamily: 'Joystix Monospace',
   fontSize: '56px',
@@ -403,14 +396,14 @@ this.textoEtapaInicial = this.add.text(564, 505, `ETAPA ${this.rondaActual}`, {
   strokeThickness: 2
 }).setOrigin(0.5).setDepth(300);
 
-// 🎵 Evitá superposiciones: detené y eliminá si ya existe
+//Evitá superposiciones: detiene y eliminá si ya existe
 const existente = this.sound.get('musicaInicio');
 if (existente) {
   existente.stop();
   this.sound.remove(existente);
 }
 
-// 🎶 Reproducí música de inicio y eliminá al terminar
+//Reproduce música de inicio y eliminá al terminar
 this.musicaInicio = this.sound.add('musicaInicio');
 this.musicaInicio.play({
   volume: 0.6,
@@ -419,7 +412,7 @@ this.musicaInicio.play({
   }
 });
 
-// 🕒 Delay antes de arrancar físicas
+//Delay antes de arrancar físicas
 this.physics.world.pause();
 
 this.time.delayedCall(2000, () => {
@@ -453,7 +446,7 @@ if (this.physics.world.isPaused && !this.juegoTerminado) return;
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.teclaZ) && this.zDisponible) {
-      this.sonidoClickeo.play(); // 🔊 Sonido al confirmar nombre
+      this.sonidoClickeo.play(); //Sonido al confirmar nombre
       const nombreFinal = this.nombreActual.join("");
       this.agregarPuntuacion({
      nombre: nombreFinal,
@@ -479,32 +472,31 @@ if (this.physics.world.isPaused && !this.juegoTerminado) return;
   this.textoPuntos.setText(puntosFormateados);
 }
 
-if (this.textoPolen) {
+  if (this.textoPolen) {
   const polenFormateado = this.polen.toString().padStart(4, '0');
   this.textoPolen.setText(`${polenFormateado}/${this.umbralVidaExtra}`);
-}
+  }
 
-  //
+
   // Movimientos de la abeja
- // Rotación con izquierda y derecha
-if (this.cursors.left.isDown) {
+  // Rotación con izquierda y derecha
+  if (this.cursors.left.isDown) {
   this.player.setAngularVelocity(-300);
-} else if (this.cursors.right.isDown) {
+  } else if (this.cursors.right.isDown) {
   this.player.setAngularVelocity(300);
-} else {
+  } else {
   this.player.setAngularVelocity(0);
-}
+  }
 
-// Movimiento hacia adelante y atrás
-if (this.cursors.up.isDown) {
+  // Movimiento hacia adelante y atrás
+  if (this.cursors.up.isDown) {
   this.physics.velocityFromRotation(this.player.rotation - Math.PI / 2, 200, this.player.body.velocity);
-} else if (this.cursors.down.isDown) {
+  } else if (this.cursors.down.isDown) {
   this.physics.velocityFromRotation(this.player.rotation - Math.PI / 2, -200, this.player.body.velocity);
-} else {
+  } else {
   this.player.setVelocity(0, 0);
-}
+  }
 
-  //
   //
 
   const distancia = 0; // separación vertical
@@ -563,10 +555,10 @@ if (this.cursors.up.isDown) {
     mosca.setDepth(1);
   }
 
-}, this);
+  }, this);
 
   // Teletransportar moscas cuando llegan al borde
-this.moscas.children.each((mosca) => {
+  this.moscas.children.each((mosca) => {
   if (!mosca.active) return;
 
   const minX = 80;
@@ -612,9 +604,9 @@ this.moscas.children.each((mosca) => {
     const speed = mosca.body.velocity.length();
     mosca.setVelocity(Math.cos(angulo) * speed, Math.sin(angulo) * speed);
   }
-}, this);
+  }, this);
     
-//Bala de moscas destruida si sale de la zona
+  //Bala de moscas destruida si sale de la zona
   this.proyectilesEnemigos.children.each((bala) => {
   if (bala.x < 0 || bala.x > 1440 || bala.y < 0 || bala.y > 1080) {
     bala.destroy();
@@ -622,7 +614,7 @@ this.moscas.children.each((mosca) => {
   });
   //
 
-if (this.juegoTerminado && this.ingresandoNombre) {
+  if (this.juegoTerminado && this.ingresandoNombre) {
   if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
     this.posicionLetra = Phaser.Math.Clamp(this.posicionLetra - 1, 0, 3);
     this.actualizarColoresLetras();
@@ -652,7 +644,7 @@ if (this.juegoTerminado && this.ingresandoNombre) {
   }
 
   return;
-}
+  }
 
   }
 
@@ -679,7 +671,7 @@ if (this.juegoTerminado && this.ingresandoNombre) {
   //
 
   //Se crea la generacion de moscas
-generarMoscaAleatoria() {
+  generarMoscaAleatoria() {
   if (this.totalMoscasGeneradas >= this.moscasPorRonda || this.juegoTerminado) return;
 
   const lados = ["arriba", "abajo", "izquierda", "derecha"];
@@ -720,7 +712,7 @@ generarMoscaAleatoria() {
   const dy = this.player.y - y;
   const angulo = Math.atan2(dy, dx);
   mosca.setRotation(angulo + Math.PI / 2);
-  const velocidadBase = 100; // las moscas tienen una velocidad base de 5
+  const velocidadBase = 100; // las moscas tienen una velocidad base de 100
   const velocidad = velocidadBase + (this.rondaActual - 1) * 10; // Aumenta 10 la velocidad de las moscas por ronda
   mosca.setVelocity(Math.cos(angulo) * velocidad, Math.sin(angulo) * velocidad);
 
@@ -770,21 +762,21 @@ actualizarIconosVidas() {
   }
 }
 
-cambiarLetra(direccion) {
+  cambiarLetra(direccion) {
   const letras = this.caracteresDisponibles;
   const indexActual = letras.indexOf(this.nombreActual[this.posicionLetra]);
   const nuevoIndex = (indexActual + direccion + letras.length) % letras.length;
   this.nombreActual[this.posicionLetra] = letras[nuevoIndex];
   this.letrasTexto[this.posicionLetra].setText(this.nombreActual[this.posicionLetra]);
-}
+  }
 
-actualizarColoresLetras() {
+  actualizarColoresLetras() {
   this.letrasTexto.forEach((letraText, index) => {
     letraText.setColor(index === this.posicionLetra ? '#ffff00' : '#00ffff');
   });
-}
+  }
 
-agregarPuntuacion(entry) {
+  agregarPuntuacion(entry) {
   const ranking = JSON.parse(localStorage.getItem("ranking")) || [];
 
   const existente = ranking.find(e => e.nombre === entry.nombre);
@@ -796,13 +788,12 @@ agregarPuntuacion(entry) {
     ranking.push(entry);
   }
 
-  // ⛏ Asegurate de ordenar ANTES de hacer slice
   const top10 = ranking
     .sort((a, b) => b.puntuacionMax - a.puntuacionMax)
     .slice(0, 10);
 
   localStorage.setItem("ranking", JSON.stringify(top10));
-}
+  }
 
   //Actualizar los textos
   mostrarTextoRonda(ronda) {
@@ -822,10 +813,10 @@ agregarPuntuacion(entry) {
 
   // Destruir texto grande después de 2 segundos
   this.time.delayedCall(2000, () => textoGrande.destroy());
-}
-//
-//Creada derrota
-derrota() {
+  }
+  //
+  //Creada derrota
+  derrota() {
 
    if (this.juegoTerminado) return;
   this.juegoTerminado = true;
@@ -867,7 +858,7 @@ derrota() {
   strokeThickness: 2
 }).setOrigin(0.5).setDepth(200);
 
-this.add.text(545, 574, 'Ingrese nombre:', {
+  this.add.text(545, 574, 'Ingrese nombre:', {
     fontFamily: 'Public Pixel',
     fontSize: '28px',
     color: '#fff',
@@ -876,24 +867,24 @@ this.add.text(545, 574, 'Ingrese nombre:', {
   }).setOrigin(0.5).setDepth(200);
 
 
-this.zDisponible = false; // deshabilita temporalmente Z
-this.time.delayedCall(2000, () => {
+  this.zDisponible = false; // deshabilita temporalmente Z
+  this.time.delayedCall(2000, () => {
   this.zDisponible = true;
-});
+  });
 
   this.ingresandoNombre = true;
 
 
   this.caracteresDisponibles = "ABCDEFGHIJKLMNOPQRSTUVWXYZÑ0123456789".split("");
-this.nombreActual = ["A", "A", "A", "A"];
-this.posicionLetra = 0;
-this.letrasTexto = [];
+  this.nombreActual = ["A", "A", "A", "A"];
+  this.posicionLetra = 0;
+  this.letrasTexto = [];
 
-const posicionBaseX = 540; // centro horizontal deseado
-const espacioEntreLetras = 40;
-const posicionY = 616; // vertical más arriba que 640
+  const posicionBaseX = 540; // centro horizontal deseado
+  const espacioEntreLetras = 40;
+  const posicionY = 616; // vertical más arriba que 640
 
-for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
   const letra = this.add.text(posicionBaseX + (i - 1.5) * espacioEntreLetras, posicionY, this.nombreActual[i], {
     fontFamily: 'Public Pixel',
     fontSize: '32px',
@@ -901,11 +892,11 @@ for (let i = 0; i < 4; i++) {
   }).setOrigin(0.5).setDepth(300);
 
   this.letrasTexto.push(letra);
-}
+  }
 
-this.actualizarColoresLetras();
+  this.actualizarColoresLetras();
 
-this.add.text(545, 658, 'Presione Z para ingresar', {
+  this.add.text(545, 658, 'Presione Z para ingresar', {
     fontFamily: 'Public Pixel',
     fontSize: '19px',
     color: '#fff',
@@ -913,8 +904,8 @@ this.add.text(545, 658, 'Presione Z para ingresar', {
     strokeThickness: 2
   }).setOrigin(0.5).setDepth(200);
 
-this.cursors = this.input.keyboard.createCursorKeys();
-this.teclaZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+  this.cursors = this.input.keyboard.createCursorKeys();
+  this.teclaZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
   this.temporizadorMoscas.remove();
 
@@ -926,14 +917,14 @@ this.teclaZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
   
   this.physics.pause(); //Fisicas pausadas
 
-// Mostrar la imagen "finjuego"
-const finJuegoSprite = this.add.sprite(540, 540, "finjuego");
-finJuegoSprite.setScale(8);
-finJuegoSprite.setOrigin(0.5);
-finJuegoSprite.setDepth(150);
+  // Mostrar la imagen "finjuego"
+  const finJuegoSprite = this.add.sprite(540, 540, "finjuego");
+  finJuegoSprite.setScale(8);
+  finJuegoSprite.setOrigin(0.5);
+  finJuegoSprite.setDepth(150);
 
 
-}
-//
+  }
+  //
 
 }

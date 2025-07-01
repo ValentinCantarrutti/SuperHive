@@ -15,6 +15,8 @@ export default class MenuScene extends Phaser.Scene {
       const centerX = this.cameras.main.centerX;
   const centerY = this.cameras.main.centerY - 45;
 
+  //Implementadas las opciones
+
   this.opciones = ['Jugar', 'Puntuaciones', 'Manual', 'Créditos', 'Salir'];
   this.textos = [];
   this.primerInicio = !localStorage.getItem("tutorialVisto");
@@ -24,7 +26,7 @@ export default class MenuScene extends Phaser.Scene {
 
   this.musicaYaIniciada = false;
 
-  // 🎵 Si no es el primer inicio, intentamos reproducir automáticamente
+  //Si no es el primer inicio, la musica se reproduce automaticamente
   if (!this.primerInicio) {
     this.sound.once('unlocked', () => {
       this.iniciarMusicaMenu();
@@ -92,6 +94,8 @@ export default class MenuScene extends Phaser.Scene {
 
   this.actualizarSeleccion();
 
+  //El primer inicio tiene tutorial
+
 if (this.primerInicio) {
   const centerX = this.cameras.main.centerX;
   const alto = this.cameras.main.height;
@@ -103,7 +107,7 @@ if (this.primerInicio) {
   }).setOrigin(0.5);
 }
 
-  // 🎧 Si aún no sonó, activamos con cualquier tecla útil o click
+  //Si no hay musica, se activa con cualquier tecla útil o click
   const teclasActivadoras = [
     this.input.keyboard.addKey('UP'),
     this.input.keyboard.addKey('DOWN'),
@@ -121,7 +125,7 @@ if (this.primerInicio) {
   }
 
 iniciarMusicaMenu() {
-  if (this.musicaYaIniciada) return; // Previene múltiples disparos
+  if (this.musicaYaIniciada) return; // Previene múltiples veces la musica
   this.musicaYaIniciada = true;
 
   const existente = this.sound.get('musicaMenu');
@@ -172,6 +176,8 @@ iniciarMusicaMenu() {
   }
 }
 
+  //Actualiza la seleccion de las opciones
+
   actualizarSeleccion() {
     const bloqueadas = this.primerInicio ? ['Jugar', 'Puntuaciones', 'Créditos', 'Salir'] : [];
 
@@ -207,6 +213,8 @@ iniciarMusicaMenu() {
       }
     });
   }
+
+  //Permite seleccionar
 
   seleccionar() {
   this.sonidoClickeo.play();

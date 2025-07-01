@@ -17,7 +17,7 @@ export default class ManualScene extends Phaser.Scene {
       .setDepth(-1)
       .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
 
-    // 🎨 Paleta de colores
+    //Paleta de colores
     const COLOR_AMARILLO = '#ffd34a';
     const COLOR_DURAZNO = '#ffc285';
     const COLOR_TEXTO = '#fff4e2';
@@ -25,7 +25,7 @@ export default class ManualScene extends Phaser.Scene {
 
     let y = 60;
 
-    // 🟨 Título principal
+    //Título principal
     this.add.text(centerX, y, 'Manual', {
       fontFamily: 'Public Pixel',
       fontSize: '56px',
@@ -34,7 +34,7 @@ export default class ManualScene extends Phaser.Scene {
 
     y += 80;
 
-    // 🟨 HISTORIA
+    //Historia
     this.add.text(60, y, 'HISTORIA:', {
       fontFamily: 'Public Pixel',
       fontSize: '26px',
@@ -57,7 +57,7 @@ export default class ManualScene extends Phaser.Scene {
 
     y += 130;
 
-    // 🟨 CONTROLES
+    //Controles
     this.add.text(60, y, 'CONTROLES:', {
       fontFamily: 'Public Pixel',
       fontSize: '26px',
@@ -107,7 +107,7 @@ export default class ManualScene extends Phaser.Scene {
 
     y += 60;
 
-    // 🟨 MECÁNICAS DEL JUEGO
+    //Mecánicas del juego
     this.add.text(60, y, 'MECÁNICAS DEL JUEGO:', {
       fontFamily: 'Public Pixel',
       fontSize: '26px',
@@ -127,7 +127,7 @@ export default class ManualScene extends Phaser.Scene {
       }
     );
 
-    // 🔙 Presiona X
+    //Presiona x para poder volver
     this.add.text(centerX, alto - 40, 'Presiona X para volver', {
       fontFamily: 'Public Pixel',
       fontSize: '22px',

@@ -10,8 +10,8 @@ export default class PuntuacionesScene extends Phaser.Scene {
 
   create() {
   const centerX = this.cameras.main.centerX;
-  const startY = 204; // antes 150
-  const lineHeight = 52; // antes 40
+  const startY = 204; 
+  const lineHeight = 52; 
 
   this.add.image(0, 0, 'menu-fondo')
       .setOrigin(0)
@@ -22,7 +22,7 @@ export default class PuntuacionesScene extends Phaser.Scene {
     this.add.text(centerX, 100, 'Puntuaciones', {
       fontFamily: 'Public Pixel',
       fontSize: '56px',
-      color: '#ffd34a', // amarillo de selección
+      color: '#ffd34a', 
       align: 'center',
     }).setOrigin(0.5);
 
@@ -32,7 +32,7 @@ export default class PuntuacionesScene extends Phaser.Scene {
 
 const delta = 240;
 
-const colNombreX = centerX - delta * 1.5; // más a la izquierda
+const colNombreX = centerX - delta * 1.5; 
 const colEtapaX = centerX - delta * 0.5;
 const colPuntX  = centerX + delta * 0.5;
 const colPosX   = centerX + delta * 1.5;
@@ -41,13 +41,13 @@ const colPosX   = centerX + delta * 1.5;
     const cabeceraStyle = {
       fontFamily: 'Public Pixel',
       fontSize: '32px',
-      color: '#fff4e2', // beige claro
+      color: '#fff4e2', 
     };
 
     const filaStyle = {
       fontFamily: 'Public Pixel',
       fontSize: '28px',
-      color: '#ffc285', // naranja durazno claro
+      color: '#ffc285', 
     };
 
     // Cabeceras
@@ -77,7 +77,7 @@ const colPosX   = centerX + delta * 1.5;
     this.add.text(centerX, this.cameras.main.height - 50, 'Presiona X para volver', {
       fontFamily: 'Public Pixel',
       fontSize: '24px',
-      color: '#fff4e2', // beige claro que resalta sobre gris
+      color: '#fff4e2', 
     }).setOrigin(0.5);
   }
 }
