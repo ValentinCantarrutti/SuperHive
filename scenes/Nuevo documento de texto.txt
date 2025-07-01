@@ -1,3 +1,518 @@
+export default class MenuScene extends Phaser.Scene {
+  constructor() {
+    super('Menu');
+  }
+
+  preload() {
+    this.load.image('menu-bg', './public/assets/Super Hive.png');
+    this.load.image('menu-fondo', './public/assets/menufondo.png');
+    this.load.audio('seleccionBotones', './public/assets/Sounds/Seleccionbotones.mp3');
+    this.load.audio('clickeoBotones', './public/assets/Sounds/Clickeobotones.mp3');
+  }
+
+  create() {
+    const centerX = this.cameras.main.centerX;
+    const centerY = this.cameras.main.centerY - 45;
+
+    this.opciones = ['Jugar', 'Puntuaciones', 'Manual', 'Créditos', 'Salir'];
+    this.textos = [];
+    this.primerInicio = !localStorage.getItem("tutorialVisto");
+
+    const volverDeSubmenu = this.registry.get('volverDesde') === true;
+    this.indiceSeleccionado = this.primerInicio ? 2 : volverDeSubmenu ? 0 : 0;
+    if (volverDeSubmenu) this.registry.set('volverDesde', false);
+
+    this.add.image(0, 0, 'menu-fondo')
+      .setOrigin(0)
+      .setDepth(-1)
+      .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+    this.add.image(centerX, centerY - 325, 'menu-bg')
+      .setOrigin(0.5)
+      .setScale(1);
+
+    const espaciado = 100;
+    this.opciones.forEach((opcion, i) => {
+      const textoInicial = this.primerInicio && opcion === 'Manual'
+        ? '> Manual <'
+        : (i === this.indiceSeleccionado && !this.primerInicio ? `> ${opcion} <` : opcion);
+
+      const colorInicial = this.primerInicio
+        ? (opcion === 'Manual' ? '#ffd34a' : '#cc8400')
+        : (i === this.indiceSeleccionado ? '#ffd34a' : '#ffa500');
+
+      const texto = this.add.text(centerX, centerY + i * espaciado, textoInicial, {
+        fontFamily: 'Public Pixel',
+        fontSize: '48px',
+        color: colorInicial,
+        align: 'center',
+      }).setOrigin(0.5);
+
+      this.textos.push(texto);
+    });
+
+    this.textos[0].x -= 12;
+    this.textos[3].x -= 8;
+    this.textos[4].x -= 12;
+
+    // Animación pulsante para Manual en primer inicio
+    if (this.primerInicio) {
+      this.tweens.add({
+        targets: this.textos[2],
+        scale: { from: 1.20, to: 1.10 },
+        duration: 300,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
+
+    this.input.keyboard.on('keydown-Z', this.seleccionar, this);
+    this.input.keyboard.on('keydown-ENTER', this.seleccionar, this);
+
+    this.sonidoSeleccion = this.sound.add('seleccionBotones');
+    this.sonidoClickeo = this.sound.add('clickeoBotones');
+
+    this.ultimoMovimientoMenu = 0;
+    this.delayMovimientoMenu = 200; // en milisegundos
+
+    this.actualizarSeleccion();
+  }
+
+
+  moverArriba() {
+    this.indiceSeleccionado = (this.indiceSeleccionado - 1 + this.opciones.length) % this.opciones.length;
+    this.actualizarSeleccion();
+    this.sonidoSeleccion.play();
+  }
+
+  moverAbajo() {
+    this.indiceSeleccionado = (this.indiceSeleccionado + 1) % this.opciones.length;
+    this.actualizarSeleccion();
+    this.sonidoSeleccion.play();
+  }
+
+  update(time) {
+  const arriba = this.input.keyboard.checkDown(this.input.keyboard.addKey('UP'));
+  const abajo = this.input.keyboard.checkDown(this.input.keyboard.addKey('DOWN'));
+
+  if (time - this.ultimoMovimientoMenu > this.delayMovimientoMenu) {
+    if (arriba) {
+      this.moverArriba();
+      this.ultimoMovimientoMenu = time;
+    } else if (abajo) {
+      this.moverAbajo();
+      this.ultimoMovimientoMenu = time;
+    }
+  }
+}
+
+  actualizarSeleccion() {
+    const bloqueadas = this.primerInicio ? ['Jugar', 'Puntuaciones', 'Créditos', 'Salir'] : [];
+
+    this.textos.forEach((texto, i) => {
+      const opcion = this.opciones[i];
+      const esSeleccionado = i === this.indiceSeleccionado;
+      const estaBloqueado = bloqueadas.includes(opcion);
+
+      let color = '#ffc285';
+      if (esSeleccionado) color = '#ffd34a';
+      else if (estaBloqueado) color = '#cc8400';
+
+      texto.setStyle({ color });
+
+      if (esSeleccionado) {
+        texto.setText(this.primerInicio && opcion === 'Manual'
+          ? '> Manual <'
+          : `> ${opcion} <`);
+      } else {
+        texto.setText(opcion);
+      }
+
+      texto.setScale(1);
+      if (!this.primerInicio || opcion !== 'Manual' || !esSeleccionado) {
+        if (esSeleccionado) {
+          this.tweens.add({
+            targets: texto,
+            scale: 1.20,
+            duration: 150,
+            ease: 'Power1',
+          });
+        }
+      }
+    });
+  }
+
+  seleccionar() {
+    this.sonidoClickeo.play(); // 🔊 reproducir clic al seleccionar
+    
+    const opcion = this.opciones[this.indiceSeleccionado];
+
+    if (this.primerInicio && opcion !== 'Manual') return;
+    if (this.primerInicio && opcion === 'Manual') {
+      localStorage.setItem("tutorialVisto", true);
+    }
+
+    if (opcion === 'Jugar') {
+      this.scene.start('Escenarondas');
+    } else if (opcion === 'Puntuaciones') {
+      this.registry.set('volverDesde', true);
+      this.scene.start('Puntuaciones');
+    } else if (opcion === 'Manual') {
+      this.registry.set('volverDesde', true);
+      this.scene.start('Manual');
+    } else if (opcion === 'Créditos') {
+      this.registry.set('volverDesde', true);
+      this.scene.start('Creditos');
+    } else if (opcion === 'Salir') {
+      window.close();
+    }
+  }
+} 
+
+export default class PuntuacionesScene extends Phaser.Scene {
+  constructor() {
+    super('Puntuaciones');
+  }
+
+  preload() {
+  this.load.image('menu-fondo', './public/assets/menufondo.png');
+  this.load.audio('clickeoBotones', './public/assets/Sounds/Clickeobotones.mp3');
+  }
+
+  create() {
+  const centerX = this.cameras.main.centerX;
+  const startY = 204; // antes 150
+  const lineHeight = 52; // antes 40
+
+  this.add.image(0, 0, 'menu-fondo')
+      .setOrigin(0)
+      .setDepth(-1)
+      .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+  // Título
+    this.add.text(centerX, 100, 'Puntuaciones', {
+      fontFamily: 'Public Pixel',
+      fontSize: '56px',
+      color: '#ffd34a', // amarillo de selección
+      align: 'center',
+    }).setOrigin(0.5);
+
+    const ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+    ranking.sort((a, b) => b.puntuacionMax - a.puntuacionMax);
+    const top10 = ranking.slice(0, 10);
+
+    const colNombreX = centerX - 300;
+    const colEtapaX = centerX - 50;
+    const colPuntX = centerX + 150;
+    const colPosX = centerX + 350;
+
+    // Estilos
+    const cabeceraStyle = {
+      fontFamily: 'Public Pixel',
+      fontSize: '32px',
+      color: '#fff4e2', // beige claro
+    };
+
+    const filaStyle = {
+      fontFamily: 'Public Pixel',
+      fontSize: '28px',
+      color: '#ffc285', // naranja durazno claro
+    };
+
+    // Cabeceras
+    this.add.text(colNombreX, startY, 'NOMBRE', cabeceraStyle).setOrigin(0.5);
+    this.add.text(colEtapaX, startY, 'ETAPA', cabeceraStyle).setOrigin(0.5);
+    this.add.text(colPuntX, startY, 'PUNTOS', cabeceraStyle).setOrigin(0.5);
+    this.add.text(colPosX, startY, 'POS.', cabeceraStyle).setOrigin(0.5);
+
+    // Filas de puntuación
+    top10.forEach((entry, i) => {
+      const y = startY + lineHeight * (i + 1);
+
+      this.add.text(colNombreX, y, entry.nombre || "DSTC", filaStyle).setOrigin(0.5);
+      this.add.text(colEtapaX, y, entry.etapaMax.toString(), filaStyle).setOrigin(0.5);
+      this.add.text(colPuntX, y, entry.puntuacionMax.toString(), filaStyle).setOrigin(0.5);
+      this.add.text(colPosX, y, (i + 1).toString(), filaStyle).setOrigin(0.5);
+    });
+
+    this.sonidoClickeo = this.sound.add('clickeoBotones');
+
+    this.input.keyboard.on('keydown-X', () => {
+      this.sonidoClickeo.play();
+      this.scene.start('Menu');
+    });
+
+    // Texto "Presiona X"
+    this.add.text(centerX, this.cameras.main.height - 50, 'Presiona X para volver', {
+      fontFamily: 'Public Pixel',
+      fontSize: '24px',
+      color: '#fff4e2', // beige claro que resalta sobre gris
+    }).setOrigin(0.5);
+  }
+}
+
+export default class CreditosScene extends Phaser.Scene {
+  constructor() {
+    super('Creditos');
+  }
+
+  preload() {
+    this.load.image('menu-fondo', './public/assets/menufondo.png');
+    this.load.audio('clickeoBotones', './public/assets/Sounds/Clickeobotones.mp3');
+  }
+
+  create() {
+    const centerX = this.cameras.main.centerX;
+
+    this.add.image(0, 0, 'menu-fondo')
+      .setOrigin(0)
+      .setDepth(-1)
+      .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+    // Título
+    this.add.text(centerX, 100, 'Créditos', {
+      fontFamily: 'Public Pixel',
+      fontSize: '56px',
+      color: '#ffd34a',
+    }).setOrigin(0.5);
+
+    // Créditos agrupados
+    const secciones = [
+      // Bloque 1: Desarrollador principal
+      { texto: 'Programación, Arte, Música y FX', y: 230, color: '#fff4e2', size: 32 },
+      { texto: 'Valentín Cantarrutti', y: 280, color: '#ffc285', size: 32 },
+
+      // Bloque 2: Tester
+      { texto: 'Tester', y: 370, color: '#fff4e2', size: 32 },
+      { texto: 'Nahuel Cantarrutti', y: 420, color: '#ffc285', size: 32 },
+
+      // Bloque 3: Institución
+      { texto: 'Desarrollado en UNRAF', y: 520, color: '#fff4e2', size: 28 }
+    ];
+
+    secciones.forEach(({ texto, y, color, size }) => {
+      this.add.text(centerX, y, texto, {
+        fontFamily: 'Public Pixel',
+        fontSize: `${size}px`,
+        color,
+        align: 'center',
+      }).setOrigin(0.5);
+    });
+
+    // Texto de volver
+    this.add.text(centerX, this.cameras.main.height - 50, 'Presiona X para volver', {
+      fontFamily: 'Public Pixel',
+      fontSize: '24px',
+      color: '#fff4e2',
+    }).setOrigin(0.5);
+
+    this.sonidoClickeo = this.sound.add('clickeoBotones');
+
+    this.input.keyboard.on('keydown-X', () => {
+      this.scene.start('Menu');
+      this.sonidoClickeo.play();
+    });
+  }
+}
+
+export default class ManualScene extends Phaser.Scene {
+  constructor() {
+    super('Manual');
+  }
+
+  preload() {
+    this.load.audio('clickeoBotones', './public/assets/Sounds/Clickeobotones.mp3');
+    this.load.image('menu-fondo', './public/assets/menufondo.png');
+  }
+
+  create() {
+    const centerX = this.cameras.main.centerX;
+    const alto = this.cameras.main.height;
+
+    this.add.image(0, 0, 'menu-fondo')
+      .setOrigin(0)
+      .setDepth(-1)
+      .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+    // 🎨 Paleta de colores
+    const COLOR_AMARILLO = '#ffd34a';
+    const COLOR_DURAZNO = '#ffc285';
+    const COLOR_TEXTO = '#fff4e2';
+    const COLOR_TECLA = '#b0e3ff';
+    const COLOR_A = '#94db92';
+    const COLOR_X = '#849aff';
+    const COLOR_JOYSTICK = '#dab9ff';
+
+    let y = 60;
+
+    // 🟨 Título principal
+    this.add.text(centerX, y, 'Manual', {
+      fontFamily: 'Public Pixel',
+      fontSize: '56px',
+      color: COLOR_AMARILLO
+    }).setOrigin(0.5);
+
+    y += 80;
+
+    // 🟨 HISTORIA
+    this.add.text(60, y, 'HISTORIA:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '26px',
+      color: COLOR_AMARILLO
+    });
+
+    y += 40;
+
+    this.add.text(60, y,
+      '¡Las moscas están atacando el panal, quieren llevarse la miel!\n\n'
+    + 'Tu misión será sobrevivir a los asaltos de las moscas,\n'
+    + 'proteger la miel y recuperar un poco del polen robado.',
+      {
+        fontFamily: 'Public Pixel',
+        fontSize: '18px',
+        color: COLOR_TEXTO,
+        lineSpacing: 8
+      }
+    );
+
+    y += 130;
+
+    // 🟨 CONTROLES
+    this.add.text(60, y, 'CONTROLES:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '26px',
+      color: COLOR_AMARILLO
+    });
+
+    y += 40;
+
+    // 🍑 Subtítulo movimiento
+    this.add.text(60, y, 'CONTROLES DE ABEJA - MOVIMIENTO:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '22px',
+      color: COLOR_DURAZNO
+    });
+
+    y += 40;
+    this.renderInput('Moverse', ['↑ ↓'], ['↑ ↓'], y, COLOR_TECLA, COLOR_JOYSTICK);
+
+    y += 32;
+    this.renderInput('Rotar', ['← →'], ['← →'], y, COLOR_TECLA, COLOR_JOYSTICK);
+
+    y += 50;
+
+    // 🍑 Subtítulo disparo
+    this.add.text(60, y, 'CONTROLES DE ABEJA - DISPARO:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '22px',
+      color: COLOR_DURAZNO
+    });
+
+    y += 40;
+    this.renderInput('Disparar', ['Z'], ['🅐 Botón A'], y, COLOR_TECLA, COLOR_A);
+
+    y += 32;
+    this.renderInput('Confirmar', ['Enter / Z'], ['🅐 Botón A'], y, COLOR_TECLA, COLOR_A);
+
+    y += 50;
+
+    // 🍑 Subtítulo selecciones
+    this.add.text(60, y, 'SELECCIONES:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '22px',
+      color: COLOR_DURAZNO
+    });
+
+    y += 40;
+    this.renderInput('Mover menú', ['↑ ↓'], ['↑ ↓'], y, COLOR_TECLA, COLOR_JOYSTICK);
+
+    y += 32;
+    this.renderInput('Aceptar', ['Z / Enter'], ['🅐 Botón A'], y, COLOR_TECLA, COLOR_A);
+
+    y += 32;
+    this.renderInput('Volver', ['X'], ['🅧 Botón X'], y, COLOR_TECLA, COLOR_X);
+
+    y += 32;
+    this.renderInput('Ingresar nombre',
+      ['↑ ↓ ← →', ' y ', 'Z'],
+      ['↑ ↓', ' y ', '🅐'],
+      y,
+      COLOR_TECLA,
+      COLOR_JOYSTICK,
+      COLOR_TEXTO
+    );
+
+    y += 60; // más controlado
+
+    // 🟨 MECÁNICAS DEL JUEGO
+    this.add.text(60, y, 'MECÁNICAS DEL JUEGO:', {
+      fontFamily: 'Public Pixel',
+      fontSize: '26px',
+      color: COLOR_AMARILLO
+    });
+
+    y += 40;
+    this.add.text(80, y,
+      '• Dispará a las moscas para ganar puntos y polen.\n'
+    + '• Por cada 20.000 de polen obtenés 1 vida extra.\n'
+    + '• Avanzá por etapas y sobreviví lo máximo posible.',
+      {
+        fontFamily: 'Public Pixel',
+        fontSize: '18px',
+        color: COLOR_TEXTO,
+        lineSpacing: 10
+      }
+    );
+
+    // 🔙 Presiona X
+    this.add.text(centerX, alto - 40, 'Presiona X para volver', {
+      fontFamily: 'Public Pixel',
+      fontSize: '22px',
+      color: '#fff4e2'
+    }).setOrigin(0.5);
+
+    this.sonidoClickeo = this.sound.add('clickeoBotones');
+
+    this.input.keyboard.on('keydown-X', () => {
+      this.sonidoClickeo.play();
+      this.scene.start('Menu');
+    });
+  }
+
+  renderInput(label, teclado, joystick, yOffset, colorTeclado, colorJoystick, labelColor = '#fff4e2') {
+    const xLabel = 60;
+    const xTeclado = 420;
+    const xJoystick = 800;
+
+    this.add.text(xLabel, yOffset, label, {
+      fontFamily: 'Public Pixel',
+      fontSize: '18px',
+      color: '#fff4e2'
+    });
+
+    let x = xTeclado;
+    teclado.forEach(part => {
+      this.add.text(x, yOffset, part, {
+        fontFamily: 'Public Pixel',
+        fontSize: '18px',
+        color: part === ' y ' ? labelColor : colorTeclado
+      });
+      x += part.length * 16 + 6;
+    });
+
+    x = xJoystick;
+    joystick.forEach(part => {
+      this.add.text(x, yOffset, part, {
+        fontFamily: 'Public Pixel',
+        fontSize: '18px',
+        color: part === ' y ' ? labelColor : colorJoystick
+      });
+      x += part.length * 16 + 6;
+    });
+  }
+}
+
 export default class HelloWorldScene extends Phaser.Scene {
   constructor() {
     // key of the scene

@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Joystix Monospace';
+  src: url('/public/assets/fonts/joystix-monospace.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Public Pixel';
+  src: url('/public/assets/fonts/PublicPixel.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+}
+
+body, canvas, .pixel-text {
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
