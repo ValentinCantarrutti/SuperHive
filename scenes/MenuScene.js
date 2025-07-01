@@ -92,6 +92,17 @@ export default class MenuScene extends Phaser.Scene {
 
   this.actualizarSeleccion();
 
+if (this.primerInicio) {
+  const centerX = this.cameras.main.centerX;
+  const alto = this.cameras.main.height;
+
+  this.add.text(centerX, alto - 40, 'Presiona Z para entrar al manual', {
+    fontFamily: 'Public Pixel',
+    fontSize: '22px',
+    color: '#fff4e2'
+  }).setOrigin(0.5);
+}
+
   // 🎧 Si aún no sonó, activamos con cualquier tecla útil o click
   const teclasActivadoras = [
     this.input.keyboard.addKey('UP'),

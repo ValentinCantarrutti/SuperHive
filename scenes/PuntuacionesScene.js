@@ -30,10 +30,12 @@ export default class PuntuacionesScene extends Phaser.Scene {
     ranking.sort((a, b) => b.puntuacionMax - a.puntuacionMax);
     const top10 = ranking.slice(0, 10);
 
-    const colNombreX = centerX - 300;
-    const colEtapaX = centerX - 50;
-    const colPuntX = centerX + 150;
-    const colPosX = centerX + 350;
+const delta = 240;
+
+const colNombreX = centerX - delta * 1.5; // más a la izquierda
+const colEtapaX = centerX - delta * 0.5;
+const colPuntX  = centerX + delta * 0.5;
+const colPosX   = centerX + delta * 1.5;
 
     // Estilos
     const cabeceraStyle = {

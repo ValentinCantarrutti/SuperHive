@@ -25,6 +25,7 @@ export default class HelloWorldScene extends Phaser.Scene {
   this.load.audio('vidaGanada', './public/assets/Sounds/Vidaganada.mp3');
   this.load.audio('disparoMosca', './public/assets/Sounds/Disparomosca.mp3');
   this.load.audio('clickeoBotones', './public/assets/Sounds/Clickeobotones.mp3');
+  this.load.audio('musicaInicio', './public/assets/Soundtrack/Super Hive - Juego inicia.mp3');
   //
 
   // Imagenes con frames
@@ -159,8 +160,26 @@ this.physics.add.overlap(this.proyectiles, this.moscas, (bala, mosca) => {
   mosca.destroy();
   this.sonidoMoscaImpacto.play();
 
-  this.polen += 200;
   this.puntos += 250;
+
+  if (this.vidasExtra < this.vidasMaximas) {
+  this.polen += 200;
+
+  const umbralesActuales = Math.floor(this.polen / this.umbralVidaExtra);
+  const umbralesPrevios = Math.floor(this.polenAnterior / this.umbralVidaExtra);
+
+  if (umbralesActuales > umbralesPrevios) {
+    this.vidasExtra++;
+    this.actualizarIconosVidas();
+    this.sonidoVidaGanada.play();
+    this.polen = 0;
+  }
+
+  this.polenAnterior = this.polen;
+} else {
+  this.polen = 0;
+  this.polenAnterior = 0;
+}
 
   if (this.polen >= this.umbralVidaExtra && this.vidasExtra < this.vidasMaximas) {
   this.vidasExtra++;
@@ -322,7 +341,24 @@ this.physics.add.overlap(this.proyectiles, this.proyectilesEnemigos, (balaAbeja,
   balaMosca.destroy();
 
   this.puntos += 20;
+  if (this.vidasExtra < this.vidasMaximas) {
   this.polen += 50;
+
+  const umbralesActuales = Math.floor(this.polen / this.umbralVidaExtra);
+  const umbralesPrevios = Math.floor(this.polenAnterior / this.umbralVidaExtra);
+
+  if (umbralesActuales > umbralesPrevios) {
+    this.vidasExtra++;
+    this.actualizarIconosVidas();
+    this.sonidoVidaGanada.play();
+    this.polen = 0;
+  }
+
+  this.polenAnterior = this.polen;
+} else {
+  this.polen = 0;
+  this.polenAnterior = 0;
+}
 
   if (this.polen >= this.umbralVidaExtra && this.vidasExtra < this.vidasMaximas) {
   this.vidasExtra++;
@@ -358,11 +394,45 @@ this.physics.add.overlap(this.proyectilesEnemigos, this.abeja, () => {
 }, null, this);
 this.actualizarIconosVidas();
 //
+// 🟨 Mostrar texto "ETAPA X" y reproducir música de inicio una sola vez
+this.textoEtapaInicial = this.add.text(564, 505, `ETAPA ${this.rondaActual}`, {
+  fontFamily: 'Joystix Monospace',
+  fontSize: '56px',
+  color: '#fff',
+  stroke: '#000',
+  strokeThickness: 2
+}).setOrigin(0.5).setDepth(300);
+
+// 🎵 Evitá superposiciones: detené y eliminá si ya existe
+const existente = this.sound.get('musicaInicio');
+if (existente) {
+  existente.stop();
+  this.sound.remove(existente);
+}
+
+// 🎶 Reproducí música de inicio y eliminá al terminar
+this.musicaInicio = this.sound.add('musicaInicio');
+this.musicaInicio.play({
+  volume: 0.6,
+  onComplete: () => {
+    this.sound.remove(this.musicaInicio);
+  }
+});
+
+// 🕒 Delay antes de arrancar físicas
+this.physics.world.pause();
+
+this.time.delayedCall(2000, () => {
+  this.physics.world.resume();
+  this.textoEtapaInicial.destroy(); // Oculta texto
+}, [], this);
 //
   }
 
 
 update() {
+if (this.physics.world.isPaused && !this.juegoTerminado) return;
+
   if (this.juegoTerminado && this.ingresandoNombre) {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
       this.posicionLetra = Phaser.Math.Clamp(this.posicionLetra - 1, 0, 3);
@@ -462,7 +532,8 @@ if (this.cursors.up.isDown) {
     mosca.entroAntes = true;
 
     // Dispara solo cuando entra
-    if (this.rondaActual >= 2 && Phaser.Math.FloatBetween(0, 1) <= 0.2) {
+    const probabilidadDisparo = Math.min(0.2 + 0.05 * (this.rondaActual - 1), 1);
+  if (Phaser.Math.FloatBetween(0, 1) <= probabilidadDisparo) {
       this.time.delayedCall(Phaser.Math.Between(200, 700), () => {
         if (!mosca.active || !this.abeja.active) return;
 
@@ -650,7 +721,7 @@ generarMoscaAleatoria() {
   const angulo = Math.atan2(dy, dx);
   mosca.setRotation(angulo + Math.PI / 2);
   const velocidadBase = 100; // las moscas tienen una velocidad base de 5
-  const velocidad = velocidadBase + (this.rondaActual - 1) * 5; // Aumenta 5 la velocidad de las moscas por ronda
+  const velocidad = velocidadBase + (this.rondaActual - 1) * 10; // Aumenta 10 la velocidad de las moscas por ronda
   mosca.setVelocity(Math.cos(angulo) * velocidad, Math.sin(angulo) * velocidad);
 
 
@@ -664,25 +735,6 @@ generarMoscaAleatoria() {
   });
 
   
-  
-  //Crea proyectiles de moscas con a partir de etapa 2
-if (this.rondaActual >= 6 && Phaser.Math.FloatBetween(0, 1) <= 0.2) {
-    this.time.delayedCall(Phaser.Math.Between(800, 1500), () => {
-      if (!mosca.active || !this.abeja.active || !mosca.puedeDisparar) return;
-
-      const bala = this.proyectilesEnemigos.create(mosca.x, mosca.y, "moscaBala");
-      bala.setScale(6.5);
-      bala.setRotation(mosca.rotation);
-
-      const velX = mosca.body.velocity.x * 2;
-      const velY = mosca.body.velocity.y * 2;
-      bala.setVelocity(velX, velY);
-      bala.setCollideWorldBounds(true);
-      bala.body.onWorldBounds = true;
-
-      this.sonidoDisparoMosca.play();
-    });
-  }
 //
 }
 //
@@ -760,13 +812,13 @@ agregarPuntuacion(entry) {
   }
 
   // Texto grande temporal centrado en pantalla
-  const textoGrande = this.add.text(720, 100, `🌀 ETAPA ${ronda}`, {
+  const textoGrande = this.add.text(564, 505, `ETAPA ${this.rondaActual}`, {
     fontFamily: 'Joystix Monospace',
-    fontSize: '48px',
+    fontSize: '56px',
     color: '#fff',
     stroke: '#000',
     strokeThickness: 2
-  }).setOrigin(0.5).setDepth(200);
+  }).setOrigin(0.5).setDepth(300);
 
   // Destruir texto grande después de 2 segundos
   this.time.delayedCall(2000, () => textoGrande.destroy());
@@ -777,13 +829,6 @@ derrota() {
 
    if (this.juegoTerminado) return;
   this.juegoTerminado = true;
-
-  // Guardar la puntuación actual en el ranking
- this.agregarPuntuacion({
-  nombre: "DSTC", // o lo que sea que ingresó
-  puntuacionMax: this.puntos,
-  etapaMax: this.rondaActual
-});
 
 
   this.abeja.setVisible(false);
