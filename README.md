@@ -1,6 +1,9 @@
 # Super Hive
 README actualizado: 14/07/25
 
+<center> <img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/d9cd8872-eed7-4706-8e9d-043e1d2e0d56" /> </center>
+
+
 Plantilla para iniciar nuevos proyectos con PHASER 3.
 
 Contiene configuración inicial y buenas prácticas de estructuras de carpetas.
