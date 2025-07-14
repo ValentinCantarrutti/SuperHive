@@ -1,10 +1,16 @@
 # Super Hive README
 
-<center><img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/11b355d1-86fe-4792-8bb7-0993351a948e" /></center>
+<img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/11b355d1-86fe-4792-8bb7-0993351a948e" />
 
-<center> <img alt="Static Badge" src="https://img.shields.io/badge/Framework-Phaser_3-orange"><img alt="Static Badge" src="https://img.shields.io/badge/Fecha_lanzamiento-Julio_2025-green"> </center>
+ㅤㅤ
+ㅤㅤ
 
-## Descripción
+
+![Badge de framework](https://img.shields.io/badge/Framework-Phaser_3-orange)
+![Badge de lanzamiento](https://img.shields.io/badge/Fecha_lanzamiento-Julio_2025-green)
+
+
+## 📙 Descripción 📙
 
 “Super Hive” es un videojuego Shoot 'em up Top-down 2D para un jugador, ambientado en un panal, en donde usaremos una abeja 
 que hará uso de un sistema de ataque y defensa para defenderse de las moscas que se aproximaran a su posición durante varias etapas.
@@ -30,7 +36,7 @@ que hará uso de un sistema de ataque y defensa para defenderse de las moscas qu
 
 Juegue a Super Hive a traves de este link: https://valentincantarrutti.github.io/SuperHive/
 
-## Créditos
+## 📋 Créditos 📋
 
 Programación, Arte, Música y FX: <b> Valentín Cantarrutti </b>
 
