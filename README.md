@@ -2,8 +2,7 @@
 
 <center><img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/11b355d1-86fe-4792-8bb7-0993351a948e" /></center>
 
-<img alt="Static Badge" src="https://img.shields.io/badge/Framework-Phaser_3-orange">
-<img alt="Static Badge" src="https://img.shields.io/badge/Fecha_lanzamiento-Julio_2025-green">
+<center> <img alt="Static Badge" src="https://img.shields.io/badge/Framework-Phaser_3-orange"> <img alt="Static Badge" src="https://img.shields.io/badge/Fecha_lanzamiento-Julio_2025-green"> <>
 
 ## Descripción
 
