@@ -1,4 +1,5 @@
-# Phaser 3 Template
+# Super Hive
+README actualizado: 14/07/25
 
 Plantilla para iniciar nuevos proyectos con PHASER 3.
 
