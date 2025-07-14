@@ -1,22 +1,35 @@
 # Super Hive
-README actualizado: 14/07/25
+<center><img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/11b355d1-86fe-4792-8bb7-0993351a948e" /></center>
 
-<img width="783" height="68" alt="Super Hive" src="https://github.com/user-attachments/assets/d9cd8872-eed7-4706-8e9d-043e1d2e0d56" />
+<center> README de Super Hive actualizado el dia: 14/07/25 </center>
+
+## Descripción
+
+“Super Hive” es un videojuego Shoot 'em up Top-down 2D para un jugador, ambientado en un panal, en donde usaremos una abeja 
+que hará uso de un sistema de ataque y defensa para defenderse de las moscas que se aproximaran a su posición durante varias etapas.
+
+<img width="1266" height="948" alt="SuperHiveimagen" src="https://github.com/user-attachments/assets/207c0e53-ba1f-4322-b7ff-eaa0a414146f" />
 
 
-Plantilla para iniciar nuevos proyectos con PHASER 3.
+## ⌨️​ Controles de teclado ⌨️​
 
-Contiene configuración inicial y buenas prácticas de estructuras de carpetas.
+<b> - Menús y nombre: </b>
+   Moverse por el menú o seleccion de letras de nombre: ↑ ↓
+   Aceptar seleccion del menú o de la letra: Z / ENTER
+   Volver: X
 
-## Cuando lo utilices
+<b> - Movimiento de la abeja: </b>
+   Moverse hacia adelante o atras: ↑ ↓
+   Rotar hacia izquierda o derecha: ← →
 
-No te olvides de customizarlo a tus necesidades.
+<b> - Hacer que la abeja dispare: </b>
+   Disparo de la abeja: Z
 
-1. Cuando lo utilices como Template desde el botón de GitHub, no olvides cambiar el nombre del repositorio acorde a tu proyecto en el wizard de creación de repositorios.
-1. Luego de clonar el repositorio en tu maquina local. Deberias:
-   1. Actualizar la version de Phaser a la version más actualizada en el archivo `index.html`. Ver la web: https://phaser.io/download/stable
-   1. También, dentro del `index.html` modificar el titulo de la pagina. Por ejemplo: `<title>My Game</title>`
-   1. Ejecutar el proyecto de forma local para ver que este funcionando correctamente. Si no es asi, deberias lograr que corra.
-   1. Una vez que este funcionando correctamente, hacer un commit con el mensaje "Update Phaser version and title".
-   1. Borrar los archivos dentro de la carpeta `/assets` y empezar a desarrollar.
-1. Por ultimo, una buena practica es: modificar este README.md, poner información relevante de tu juego, imagenes, videos, etc, y luego hacer un commit con el mensaje "Customize README.md".
+## 🎮 Link del juego 🎮
+
+Juegue a Super Hive a traves de este link: https://valentincantarrutti.github.io/SuperHive/
+
+## Créditos
+
+Programación, Arte, Música y FX: <b> Valentín Cantarrutti </b>
+Tester: <b> Nahuel Cantarrutti </b>
